@@ -4,6 +4,7 @@ services:
     build:
       context: .
       dockerfile: ./infra/Dockerfile
+    command: fastapi run src/app/main.py --port ${APP_PORT}
     ports:
       - "${APP_PORT}:8000"
     volumes:
@@ -19,7 +20,7 @@ services:
     container_name: postgresql
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
@@ -27,7 +28,7 @@ services:
     ports:
       - "${POSTGRES_PORT}:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DATABASE}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -39,7 +40,7 @@ services:
     volumes:
       - redis_data:/data
     ports:
-      - "${REDIS_PORT}:6379"
+      - "${RESIS_PORT}:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s

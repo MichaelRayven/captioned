@@ -9,6 +9,7 @@ dependencies = [
     "asyncpg>=0.31.0",
     "celery[redis]>=5.6.2",
     "fastapi[standard]>=0.129.0",
+    "pydantic-settings>=2.13.1",
     "sqlalchemy[asyncio]>=2.0.46",
 ]
 
@@ -32,17 +33,20 @@ fix = true
 fixable = ["ALL"]
 select = ["ALL"]
 ignore = [
-    "D",      # Missing docstring
-    "Q000",   # Use specified quotes for inline strings
-    "Q003",   # Avoid escaped quotes
-    "COM812", # Enforce trailing commas
+    "D",       # Missing docstring
+    "Q000",    # Use specified quotes for inline strings
+    "Q003",    # Avoid escaped quotes
+    "COM812",  # Enforce trailing commas
+    "EM101",   # Exception must not use a string literal, assign to variable first
+    "TRY003",  # Avoid specifying long messages outside the exception class,
+    "PLW0108", # Avoid unnesessary lambda
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "src/alembic/env.py" = [
-    "INP001",  # Namespace package
-    "TC002",   # Third-party imports in type-checking
-    "ERA001",  # Commented-out code
+    "INP001", # Namespace package
+    "TC002",  # Third-party imports in type-checking
+    "ERA001", # Commented-out code
 ]
 
 [tool.ruff.lint.pydocstyle]
@@ -55,6 +59,11 @@ known-first-party = ["src"]
 quote-style = "single"
 indent-style = "space"
 docstring-code-format = true
+
+[tool.pyright]
+reportArgumentType = "warning"
+typeCheckingMode = "basic"
+reportGeneralTypeIssues = true
 
 [tool.mypy]
 plugins = ["pydantic.mypy"]
