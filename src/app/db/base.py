@@ -15,11 +15,11 @@ class Base(AsyncAttrs, DeclarativeBase):
 
 engine = create_async_engine(
     url=str(settings.postgres.url),
-    echo=True,  # Для dev, уберите в prod
+    echo=settings.postgres.echo,
     pool_pre_ping=True,
     pool_recycle=300,
-    pool_size=10,
-    max_overflow=20,
+    pool_size=settings.postgres.pool_size,
+    max_overflow=settings.postgres.pool_max_overflow,
 )
 
 # Session factory

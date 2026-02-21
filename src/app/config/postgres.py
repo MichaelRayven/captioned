@@ -26,8 +26,8 @@ class PostgresConfig(BaseSettings):
     pool_max_overflow: int = 10
     echo: bool = False
 
+    @computed_field  # type: ignore[prop-decorator]
     @property
-    @computed_field
     def url(self) -> PostgresDsn:
         """Construct the database URL."""
         return PostgresDsn.build(

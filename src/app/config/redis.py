@@ -22,8 +22,8 @@ class RedisConfig(BaseSettings):
     password: SecretStr | None = None
     db: int = 0
 
+    @computed_field  # type: ignore[prop-decorator]
     @property
-    @computed_field
     def url(self) -> RedisDsn:
         """Construct the Redis URL."""
         return RedisDsn.build(
