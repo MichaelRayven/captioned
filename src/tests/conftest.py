@@ -10,9 +10,8 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from alembic import command
-from app.config import settings
-from app.db.base import engine
-from app.deps import get_async_session
+from app.core.config import settings
+from app.core.database import engine, get_async_session
 from app.main import app
 
 # Test database connection settings

@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase
 
-from app.config import settings
+from app.core.config import settings
 
 
 class Base(AsyncAttrs, DeclarativeBase):
@@ -23,7 +23,7 @@ engine = create_async_engine(
 )
 
 # Session factory
-async_session_factory = async_sessionmaker(
+session_factory = async_sessionmaker(
     engine,
     class_=AsyncSession,
     expire_on_commit=False,

@@ -1,5 +1,5 @@
 # Variables
-compose_file := "infra/docker/docker-compose.local.yaml"
+docker_dir := "infra/docker"
 project_dir := "."
 
 default:
@@ -8,24 +8,24 @@ default:
 # --- Docker Commands ---
 
 [group('docker')]
-up:
-    docker compose -f {{compose_file}} --project-directory {{project_dir}} up -d
+up config:
+    docker compose -f "{{docker_dir}}/docker-compose.{{config}}.yaml" --project-directory {{project_dir}} up -d
 
 [group('docker')]
-down:
-    docker compose -f {{compose_file}} --project-directory {{project_dir}} down
+down config:
+    docker compose -f "{{docker_dir}}/docker-compose.{{config}}.yaml" --project-directory {{project_dir}} down
 
 [group('docker')]
-build:
-    docker compose -f {{compose_file}} --project-directory {{project_dir}} build
+build config:
+    docker compose -f "{{docker_dir}}/docker-compose.{{config}}.yaml" --project-directory {{project_dir}} build
 
 [group('docker')]
-logs *args:
-    docker compose -f {{compose_file}} --project-directory {{project_dir}} logs -f {{args}}
+logs config *args:
+    docker compose -f "{{docker_dir}}/docker-compose.{{config}}.yaml" --project-directory {{project_dir}} logs {{args}}
 
 [group('docker')]
-ps:
-    docker compose -f {{compose_file}} --project-directory {{project_dir}} ps
+ps config:
+    docker compose -f "{{docker_dir}}/docker-compose.{{config}}.yaml" --project-directory {{project_dir}} ps
 
 # --- Local Development (using uv) ---
 
@@ -44,21 +44,29 @@ worker:
 
 # --- Database & Migrations ---
 
-[group('db')]
+[group('migrations')]
 migrate:
     uv run alembic upgrade head
 
-[group('db')]
+[group('migrations')]
 makemigrations message:
     uv run alembic revision --autogenerate -m "{{message}}"
 
 # --- Quality ---
 
-[group('lint')]
+[group('quality')]
 lint:
     uv run ruff check .
     uv run ruff format --check .
 
-[group('lint')]
+[group('quality')]
 format:
     uv run ruff format .
+
+[group('quality')]
+test:
+    uv run pytest
+
+[group('quality')]
+coverage:
+    uv run pytest --cov=src/app

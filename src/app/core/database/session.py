@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from app.db.base import async_session_factory
+from .base import session_factory
 
 if TYPE_CHECKING:
     from collections.abc import AsyncGenerator
@@ -9,5 +9,5 @@ if TYPE_CHECKING:
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession]:
-    async with async_session_factory.begin() as session:
+    async with session_factory() as session:
         yield session
