@@ -1,0 +1,61 @@
+services:
+  postgres:
+    extends:
+      file: infra/docker/docker-compose.infra.yaml
+      service: postgres
+
+  redis:
+    extends:
+      file: infra/docker/docker-compose.infra.yaml
+      service: redis
+
+  app:
+    container_name: fastapi-server
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile
+    command: fastapi run src/app/main.py --port ${APP_PORT}
+    ports:
+      - "${APP_PORT}:8000"
+    volumes:
+      - ./src:/app/src
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  celery-worker:
+    container_name: celery-worker
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile
+    command: celery -A src.app.worker.celery_app worker --loglevel=info
+    volumes:
+      - ./src:/app/src
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  celery-beat:
+    container_name: celery-beat
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile
+    command: celery -A src.app.worker.celery_app beat --loglevel=info
+    volumes:
+      - ./src:/app/src
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:

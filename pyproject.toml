@@ -9,18 +9,33 @@ dependencies = [
     "asyncpg>=0.31.0",
     "celery[redis]>=5.6.2",
     "fastapi[standard]>=0.129.0",
+    "pydantic-settings>=2.13.1",
     "sqlalchemy[asyncio]>=2.0.46",
 ]
 
 [dependency-groups]
 dev = [
     "celery-types>=0.24.0",
+    "factory-boy>=3.3.3",
+    "httpx>=0.28.1",
     "mypy>=1.19.1",
     "prek>=0.3.3",
     "pytest>=9.0.2",
-    "pytest-asyncio>=1.3.0",
+    "pytest-cov>=7.0.0",
+    "pytest-xdist>=3.8.0",
     "ruff>=0.15.1",
+    "rust-just>=1.46.0",
 ]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.ruff]
 src = ["src"]
@@ -32,17 +47,20 @@ fix = true
 fixable = ["ALL"]
 select = ["ALL"]
 ignore = [
-    "D",      # Missing docstring
-    "Q000",   # Use specified quotes for inline strings
-    "Q003",   # Avoid escaped quotes
-    "COM812", # Enforce trailing commas
+    "D",       # Missing docstring
+    "Q000",    # Use specified quotes for inline strings
+    "Q003",    # Avoid escaped quotes
+    "COM812",  # Enforce trailing commas
+    "EM101",   # Exception must not use a string literal, assign to variable first
+    "TRY003",  # Avoid specifying long messages outside the exception class,
+    "PLW0108", # Avoid unnesessary lambda
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "src/alembic/env.py" = [
-    "INP001",  # Namespace package
-    "TC002",   # Third-party imports in type-checking
-    "ERA001",  # Commented-out code
+    "INP001", # Namespace package
+    "TC002",  # Third-party imports in type-checking
+    "ERA001", # Commented-out code
 ]
 
 [tool.ruff.lint.pydocstyle]

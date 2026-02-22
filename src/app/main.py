@@ -5,4 +5,4 @@ app = FastAPI()
 
 @app.get('/healthcheck')
 async def healthcheck() -> None:
-    pass
+    return
