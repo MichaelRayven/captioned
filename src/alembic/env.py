@@ -24,10 +24,8 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
 
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
+# Use database connection string provided by config.
+config.set_main_option('sqlalchemy.url', str(settings.postgres.url))
 
 
 def run_migrations_offline() -> None:
@@ -42,10 +40,11 @@ def run_migrations_offline() -> None:
     script output.
 
     """
+    url = config.get_main_option('sqlalchemy.url')
     context.configure(
-        url=str(settings.postgres.url),
+        url=url,
         target_metadata=target_metadata,
-        literal_binds=True,
+        compare_type=True,
         dialect_opts={'paramstyle': 'named'},
     )
 
@@ -66,7 +65,7 @@ async def run_async_migrations() -> None:
     """
 
     connectable = async_engine_from_config(
-        config.get_section(config.config_ini_section, {'url': str(settings.postgres.url)}),
+        config.get_section(config.config_ini_section),  # type: ignore[arg-type]
         prefix='sqlalchemy.',
         poolclass=pool.NullPool,
     )
