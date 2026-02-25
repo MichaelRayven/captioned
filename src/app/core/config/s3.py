@@ -1,4 +1,4 @@
-from pydantic import BaseModel, HttpUrl, SecretStr
+from pydantic import BaseModel, Field, HttpUrl, SecretStr
 
 
 class S3Config(BaseModel):
@@ -8,17 +8,14 @@ class S3Config(BaseModel):
     bucket_name: str
 
     presigned_url_expiry: int = 3600
-    max_file_size_bytes: int = 500 * 1024 * 1024  # 500 MB
-    # part_size_bytes should be at least 5 MB
-    # max_part_number should be at most 10000
-    # https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html
-    part_size_bytes: int = 10 * 1024 * 1024  # 10 MB
-    max_part_number: int = 10000
+    max_file_size_bytes: int = 500 * 1024**2  # 500 MB
+
+    # Limits per https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html
+    part_size_bytes: int = Field(
+        default=10 * 1024**2, ge=5 * 1024**2, le=5 * 1024**3
+    )
+    max_part_number: int = Field(default=10000, ge=1, le=10000)
+
     allowed_content_types: list[str] = [
-        'image/jpeg',
-        'image/png',
-        'image/webp',
         'video/mp4',
-        'video/quicktime',
-        'video/x-msvideo',
     ]

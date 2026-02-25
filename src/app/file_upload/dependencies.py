@@ -2,8 +2,8 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from app.file_upload.services import FileUploadService
+from app.file_upload.services import MultipartUploadService
 
-FileUploadServiceDependency = Annotated[
-    FileUploadService, Depends(FileUploadService)
+MultipartUploadServiceDependency = Annotated[
+    MultipartUploadService, Depends(MultipartUploadService)
 ]

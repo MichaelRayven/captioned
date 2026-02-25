@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from types_aiobotocore_s3 import S3Client
 
 
-class FileUploadService:
+class MultipartUploadService:
     def __init__(self, client: S3Client) -> None:
         self.client = client
 
@@ -88,9 +88,7 @@ class FileUploadService:
                 ]
             },
         )
-        return CompleteUploadResponse(
-            key=req.key, location=response['Location']
-        )
+        return CompleteUploadResponse(key=req.key, url=response['Location'])
 
     async def abort_multipart_upload(self, req: AbortUploadRequest) -> None:
         await self.client.abort_multipart_upload(

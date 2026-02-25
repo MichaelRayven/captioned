@@ -24,13 +24,13 @@ class InitiateUploadRequest(BaseModel):
 
 
 class CompleteUploadRequest(BaseModel):
-    class UploadPart(BaseModel):
-        part_number: int = Field(gt=0)
-        etag: str
+    class UploadedPart(BaseModel):
+        part_number: int = Field(ge=1, le=settings.s3.max_part_number)
+        etag: str  # returned in the ETag header
 
     upload_id: str
     key: str
-    parts: list[UploadPart] = Field(min_length=1)
+    parts: list[UploadedPart] = Field(min_length=1)
 
 
 class AbortUploadRequest(BaseModel):
@@ -52,4 +52,4 @@ class InitiateUploadResponse(BaseModel):
 
 class CompleteUploadResponse(BaseModel):
     key: str
-    location: str
+    url: str
