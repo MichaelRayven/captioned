@@ -1,32 +1,23 @@
-from pydantic import Field, PostgresDsn, SecretStr, computed_field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import BaseModel, PostgresDsn, SecretStr, computed_field
 
 
-class PostgresConfig(BaseSettings):
+class PostgresConfig(BaseModel):
     """PostgreSQL database configuration."""
-
-    model_config = SettingsConfigDict(
-        env_file=('.env.example', '.env'),
-        env_file_encoding='utf-8',
-        env_prefix='POSTGRES_',
-        extra='ignore',
-        case_sensitive=False,
-    )
 
     # Required
     scheme: str = 'postgresql+asyncpg'
-    host: str = Field(default=...)
+    host: str
     port: int = 5432
-    user: str = Field(default=...)
-    password: SecretStr = Field(default=...)
-    database: str = Field(default=...)
+    user: str
+    password: SecretStr
+    database: str
 
     # Optional
     pool_size: int = 5
     pool_max_overflow: int = 10
     echo: bool = False
 
-    @computed_field  # type: ignore[prop-decorator]
+    @computed_field
     @property
     def url(self) -> PostgresDsn:
         """Construct the database URL."""

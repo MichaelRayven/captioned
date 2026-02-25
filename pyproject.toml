@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "aioboto3>=15.5.0",
     "alembic>=1.18.4",
     "asyncpg>=0.31.0",
     "celery[redis]>=5.6.2",
@@ -25,6 +26,8 @@ dev = [
     "pytest-xdist>=3.8.0",
     "ruff>=0.15.1",
     "rust-just>=1.46.0",
+    "ty>=0.0.18",
+    "types-aioboto3[s3]>=15.5.0",
 ]
 
 [build-system]
@@ -40,7 +43,7 @@ where = ["src"]
 [tool.ruff]
 src = ["src"]
 include = ["src/**/*.py"]
-line-length = 100
+line-length = 80
 fix = true
 
 [tool.ruff.lint]
@@ -52,6 +55,7 @@ ignore = [
     "Q003",    # Avoid escaped quotes
     "COM812",  # Enforce trailing commas
     "EM101",   # Exception must not use a string literal, assign to variable first
+    "EM102",   # Exception must not use an f-string literal, assign to variable first
     "TRY003",  # Avoid specifying long messages outside the exception class,
     "PLW0108", # Avoid unnesessary lambda
 ]
@@ -73,6 +77,16 @@ known-first-party = ["src"]
 quote-style = "single"
 indent-style = "space"
 docstring-code-format = true
+
+[tool.ty.environment]
+root = ["src"]
+
+[tool.ty.rules]
+unused-ignore-comment = "warn"
+redundant-cast = "warn"
+possibly-missing-attribute = "warn"
+possibly-missing-import = "warn"
+possibly-unresolved-reference = "warn"
 
 [tool.mypy]
 plugins = ["pydantic.mypy"]

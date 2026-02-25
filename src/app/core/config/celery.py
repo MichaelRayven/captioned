@@ -1,17 +1,8 @@
-from pydantic import AmqpDsn, RedisDsn  # noqa: TC002
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import AmqpDsn, BaseModel, RedisDsn
 
 
-class CeleryConfig(BaseSettings):
+class CeleryConfig(BaseModel):
     """Celery configuration."""
-
-    model_config = SettingsConfigDict(
-        env_file=('.env', '.env.sample'),
-        env_file_encoding='utf-8',
-        env_prefix='CELERY_',
-        extra='ignore',
-        case_sensitive=False,
-    )
 
     # Time and date
     timezone: str = 'UTC'
